@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0a0f;
+  color: #f1f5f9;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111118;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Improved spacing for better readability */
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  transition: all 0.3s ease;
+}
+
+/* Better section spacing */
+section {
+  margin: 0 0 3rem 0;
+}
+
+/* Improved button styling */
+button {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Better input styling */
+input, textarea, select {
+  transition: all 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  transition: all 0.2s ease;
+}
+
+/* Enhanced container padding */
+@layer components {
+  .page-container {
+    @apply max-w-7xl mx-auto px-6 lg:px-8;
+  }
+
+  .section-spacing {
+    @apply py-20 lg:py-24;
+  }
+
+  .heading-primary {
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight;
+  }
+
+  .heading-secondary {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold;
+  }
+
+  .heading-tertiary {
+    @apply text-xl sm:text-2xl font-semibold;
+  }
+
+  .text-body {
+    @apply text-gray-400 leading-relaxed;
+  }
+
+  .text-label {
+    @apply text-sm font-medium text-gray-300 mb-2;
+  }
+}
+
