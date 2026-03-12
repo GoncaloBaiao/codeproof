@@ -7,48 +7,34 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  email         String?   @unique
-  walletAddress String?   @unique
-  name          String?
-  plan          Plan      @default(FREE)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+model WalletUser {
+  id                   String    @id @default(cuid())
+  walletAddress        String    @unique
+  plan                 Plan      @default(FREE)
+  licenseKey           String?   @unique
+  licenseActivatedAt   DateTime?
+  monthlyRegistrations Int       @default(0)
+  lastResetDate        DateTime  @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  registrations        Registration[]
 
-  registrations Registration[]
-  sessions      Session[]
-
-  @@map("users")
-}
-
-model Session {
-  id        String   @id @default(cuid())
-  sessionToken String @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expires   DateTime
-  created_at DateTime @default(now())
-
-  @@map("sessions")
+  @@map("wallet_users")
 }
 
 model Registration {
-  id            String   @id @default(cuid())
-  hash          String   @unique
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String     @id @default(cuid())
+  hash          String     @unique
+  walletAddress String
   projectName   String
   description   String?
-  txHash        String?  // Transaction hash from Ethereum
-  blockNumber   Int?     // Block number where transaction was mined
-  timestamp     BigInt?  // Blockchain timestamp
-  isPublic      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  txHash        String?
+  blockNumber   Int?
+  isPublic      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  wallet        WalletUser @relation(fields: [walletAddress], references: [walletAddress])
 
   certificates  Certificate[]
 
@@ -56,11 +42,11 @@ model Registration {
 }
 
 model Certificate {
-  id            String   @id @default(cuid())
+  id             String       @id @default(cuid())
   registrationId String
-  registration  Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
-  pdfUrl        String?
-  createdAt     DateTime @default(now())
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  pdfUrl         String?
+  createdAt      DateTime     @default(now())
 
   @@map("certificates")
 }

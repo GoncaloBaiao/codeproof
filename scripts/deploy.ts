@@ -1,3 +1,4 @@
+/// <reference types="hardhat/types" />
 import hre from "hardhat";
 
 async function main() {

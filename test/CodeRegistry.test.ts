@@ -1,3 +1,5 @@
+/// <reference types="hardhat/types" />
+/// <reference types="hardhat/types/chai-matchers" />
 import { expect } from "chai";
 import hre from "hardhat";
 

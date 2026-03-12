@@ -3,8 +3,8 @@ import { Footer } from "@/components/Footer";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 flex flex-col">
-      <div className="flex-1 px-6 lg:px-12 py-12 lg:py-16 flex items-center">
+    <main className="min-h-screen w-full bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 flex flex-col">
+      <div className="w-full flex-1 px-8 lg:px-16 xl:px-24 py-12 lg:py-16 flex items-center">
         <div className="max-w-4xl mx-auto w-full text-center">
           <div className="mb-8">
             <h1 className="text-8xl sm:text-9xl font-black text-transparent bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text mb-4">

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
+    <main className="min-h-screen w-full bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
       {/* Hero Section */}
-      <section className="relative w-full px-6 lg:px-12 pt-32 pb-24 overflow-hidden">
+      <section className="relative w-full px-12 lg:px-20 xl:px-32 pt-40 pb-32 overflow-hidden">
         {/* Decorative glow */}
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-b from-blue-600/20 to-transparent rounded-full blur-3xl"></div>
         
@@ -40,16 +41,16 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="w-full px-6 lg:px-12 py-24 bg-gray-900/50">
+      <section className="w-full px-12 lg:px-20 xl:px-32 py-32 bg-gray-900/50">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="text-center mb-20">
+          <div className="text-center mb-24">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">How It Works</h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">Simple process to register and verify your code</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 w-full">
+          <div className="grid md:grid-cols-3 gap-12 w-full">
             {/* Step 1 */}
-            <div className="p-8 md:p-10 bg-gray-900 border-2 border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+            <div className="p-10 md:p-12 bg-gray-900 border-2 border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-400 rounded-full flex items-center justify-center mb-6 text-white font-bold text-2xl shadow-lg shadow-blue-500/20">
                 1
               </div>
@@ -60,7 +61,7 @@ export default function Home() {
             </div>
 
             {/* Step 2 */}
-            <div className="p-8 md:p-10 bg-gray-900 border-2 border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+            <div className="p-10 md:p-12 bg-gray-900 border-2 border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-400 rounded-full flex items-center justify-center mb-6 text-white font-bold text-2xl shadow-lg shadow-purple-500/20">
                 2
               </div>
@@ -71,7 +72,7 @@ export default function Home() {
             </div>
 
             {/* Step 3 */}
-            <div className="p-8 md:p-10 bg-gray-900 border-2 border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
+            <div className="p-10 md:p-12 bg-gray-900 border-2 border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
               <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 to-blue-400 rounded-full flex items-center justify-center mb-6 text-white font-bold text-2xl shadow-lg shadow-cyan-500/20">
                 3
               </div>
@@ -85,14 +86,14 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="w-full px-6 lg:px-12 py-24">
+      <section className="w-full px-8 lg:px-16 xl:px-24 py-24">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-20">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">Why CodeProof?</h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">Built with security, transparency, and privacy at its core</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto w-full">
+          <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto w-full">
             <div className="flex gap-6 p-8 bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/30 transition-all duration-300">
               <div className="flex-shrink-0">
                 <div className="flex items-center justify-center h-14 w-14 rounded-xl bg-gradient-to-br from-blue-600/30 to-blue-400/30 text-blue-400 font-bold text-xl">
@@ -153,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full px-6 lg:px-12 py-24 bg-gradient-to-r from-blue-950/30 to-purple-950/30">
+      <section className="w-full px-8 lg:px-16 xl:px-24 py-24 bg-gradient-to-r from-blue-950/30 to-purple-950/30">
         <div className="max-w-4xl mx-auto w-full">
           <div className="p-12 md:p-16 bg-gradient-to-br from-gray-900/80 to-gray-800/50 border-2 border-blue-500/30 rounded-3xl text-center backdrop-blur-sm">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">Ready to Prove Your Code?</h2>
@@ -170,23 +171,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="w-full border-t border-gray-800 px-6 lg:px-12 py-16 md:py-24 mt-24 md:mt-32 bg-gray-950/50">
-        <div className="max-w-7xl mx-auto w-full">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="text-center md:text-left">
-              <div className="flex items-center gap-2 text-xl font-bold text-white mb-3 justify-center md:justify-start">
-                <div className="w-3 h-3 bg-blue-500 rounded-full shadow-lg"></div>
-                CodeProof
-              </div>
-              <p className="text-gray-400 text-sm">Blockchain code authentication platform</p>
-            </div>
-            <div className="text-center text-gray-500 text-sm">
-              <p>&copy; 2024 CodeProof. All rights reserved.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

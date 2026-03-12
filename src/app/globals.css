@@ -5,21 +5,38 @@
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background-color: #0a0a0f;
-  color: #f1f5f9;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  line-height: 1.6;
+  body {
+    background-color: #0a0a0f;
+    color: #f1f5f9;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    line-height: 1.6;
+  }
+
+  button {
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  button:active {
+    transform: scale(0.98);
+  }
+
+  input, textarea, select {
+    transition: all 0.2s ease;
+  }
+
+  a {
+    transition: all 0.3s ease;
+  }
 }
 
 /* Scrollbar styling */
@@ -41,40 +58,6 @@ body {
   background: #64748b;
 }
 
-/* Improved spacing for better readability */
-p {
-  margin-bottom: 1rem;
-}
-
-a {
-  transition: all 0.3s ease;
-}
-
-/* Better section spacing */
-section {
-  margin: 0 0 3rem 0;
-}
-
-/* Improved button styling */
-button {
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* Better input styling */
-input, textarea, select {
-  transition: all 0.2s ease;
-}
-
-input:focus, textarea:focus, select:focus {
-  transition: all 0.2s ease;
-}
-
-/* Enhanced container padding */
 @layer components {
   .page-container {
     @apply max-w-7xl mx-auto px-6 lg:px-8;
@@ -101,7 +84,6 @@ input:focus, textarea:focus, select:focus {
   }
 
   .text-label {
-    @apply text-sm font-medium text-gray-300 mb-2;
+    @apply text-sm font-medium text-gray-300 mb-2 block;
   }
 }
-
