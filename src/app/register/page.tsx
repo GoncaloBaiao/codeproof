@@ -89,6 +89,25 @@ export default function RegisterPage() {
       });
 
       const transaction = await registerCodeOnBlockchain(hash, metadata);
+
+      const saveResponse = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash,
+          projectName,
+          description,
+          txHash: transaction,
+          walletAddress: address,
+          isPublic,
+        }),
+      });
+
+      if (!saveResponse.ok) {
+        const saveData = await saveResponse.json().catch(() => null);
+        throw new Error(saveData?.error || "Failed to save registration to database");
+      }
+
       setTxHash(transaction);
       setSuccess(
         `✓ Code registered successfully! Transaction: ${transaction?.slice(0, 16)}...`

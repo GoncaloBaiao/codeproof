@@ -5,7 +5,9 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "";
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000000";
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+  ? `0x${process.env.PRIVATE_KEY.replace(/^0x/, "")}`
+  : "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 const config: HardhatUserConfig = {
   solidity: {

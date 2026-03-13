@@ -16,6 +16,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CodeProof - Blockchain Code Authentication",
   description: "Prove that the code is yours. Forever. Register your code on Ethereum blockchain.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+    shortcut: ["/icon.png"],
+  },
 };
 
 export default function RootLayout({

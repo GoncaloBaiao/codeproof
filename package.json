@@ -12,12 +12,14 @@
     "hardhat:compile": "hardhat compile"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "dotenv": "^16.6.1",
     "ethers": "^6.16.0",
     "jspdf": "^2.5.2",
     "next": "16.1.6",
     "next-auth": "^4.24.13",
+    "pg": "^8.20.0",
     "prisma": "^7.5.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",

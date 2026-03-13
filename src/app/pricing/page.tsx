@@ -10,10 +10,12 @@ import { PLANS } from "@/lib/plans";
 export default function PricingPage() {
   const { address, isConnected, plan, isPro, connect } = useWallet();
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
     if (!address) return;
     setIsCheckoutLoading(true);
+    setCheckoutError(null);
 
     try {
       const res = await fetch("/api/checkout", {
@@ -23,11 +25,16 @@ export default function PricingPage() {
       });
 
       const data = await res.json();
-      if (data.checkoutUrl) {
+
+      if (res.ok && data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
+        return;
       }
+
+      setCheckoutError(data.error || "Checkout indisponivel de momento. Tenta novamente em alguns minutos.");
     } catch (error) {
       console.error("Checkout error:", error);
+      setCheckoutError("Erro ao iniciar pagamento. Verifica a conexao e tenta novamente.");
     } finally {
       setIsCheckoutLoading(false);
     }
@@ -164,13 +171,21 @@ export default function PricingPage() {
                     ⚡ Plano Ativo
                   </div>
                 ) : (
-                  <button
-                    onClick={handleCheckout}
-                    disabled={isCheckoutLoading}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 text-white py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/40"
-                  >
-                    {isCheckoutLoading ? "A redirecionar..." : "Upgrade para PRO"}
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      onClick={handleCheckout}
+                      disabled={isCheckoutLoading}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 text-white py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/40"
+                    >
+                      {isCheckoutLoading ? "A redirecionar para pagamento..." : "Upgrade para PRO"}
+                    </button>
+                    <p className="text-xs text-gray-400 text-center">
+                      Ja tens license key? <Link href="/dashboard" className="text-blue-400 hover:underline">Ativa no Dashboard</Link>
+                    </p>
+                    {checkoutError && (
+                      <p className="text-xs text-red-400 text-center">{checkoutError}</p>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

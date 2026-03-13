@@ -1,66 +1,109 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 /**
- * Save code registration to database (Phase 2)
+ * Save code registration to database
  * POST /api/register
- * Body: { hash, projectName, description, txHash, blockNumber, timestamp, userId }
+ * Body: { hash, projectName, description, txHash, walletAddress, isPublic }
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { hash, projectName, txHash, blockNumber, timestamp, metadata } = body;
+    const { hash, projectName, description, txHash, walletAddress, isPublic } = body;
 
-    if (!hash || !projectName) {
+    if (!hash || !projectName || !walletAddress) {
       return NextResponse.json(
-        { error: "Hash and projectName are required" },
+        { error: "Hash, projectName, and walletAddress are required" },
         { status: 400 }
       );
     }
 
-    // Phase 2: Save registration to Prisma/PostgreSQL
-    // Example Prisma code:
-    // const registration = await prisma.registration.create({
-    //   data: {
-    //     hash,
-    //     projectName,
-    //     description: metadata?.description,
-    //     txHash,
-    //     blockNumber,
-    //     timestamp: BigInt(timestamp),
-    //     userId,
-    //     isPublic: true,
-    //   },
-    // });
+    const normalizedWalletAddress = String(walletAddress).toLowerCase();
+
+    const result = await prisma.$transaction(async (transaction) => {
+      const existingUser = await transaction.walletUser.findUnique({
+        where: { walletAddress: normalizedWalletAddress },
+      });
+
+      const now = new Date();
+      const shouldResetMonth = existingUser
+        ? now.getMonth() !== existingUser.lastResetDate.getMonth() ||
+          now.getFullYear() !== existingUser.lastResetDate.getFullYear()
+        : false;
+
+      const user = existingUser
+        ? await transaction.walletUser.update({
+            where: { walletAddress: normalizedWalletAddress },
+            data: shouldResetMonth
+              ? { monthlyRegistrations: 0, lastResetDate: now }
+              : {},
+          })
+        : await transaction.walletUser.create({
+            data: { walletAddress: normalizedWalletAddress },
+          });
+
+      const registration = await transaction.registration.create({
+        data: {
+          hash: String(hash),
+          projectName: String(projectName),
+          description: description ? String(description) : null,
+          txHash: txHash ? String(txHash) : null,
+          walletAddress: normalizedWalletAddress,
+          isPublic: typeof isPublic === "boolean" ? isPublic : true,
+        },
+      });
+
+      const updatedUser = await transaction.walletUser.update({
+        where: { walletAddress: normalizedWalletAddress },
+        data: {
+          monthlyRegistrations: {
+            increment: 1,
+          },
+        },
+      });
+
+      return { registration, updatedUser };
+    });
 
     return NextResponse.json(
       {
-        note: "Database save implementation coming in Phase 2",
-        hash,
-        projectName,
-        registered: false,
+        registered: true,
+        registrationId: result.registration.id,
+        hash: result.registration.hash,
+        projectName: result.registration.projectName,
+        monthlyRegistrations: result.updatedUser.monthlyRegistrations,
       },
       { status: 201 }
     );
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { error: "Invalid request" },
+      { error: error instanceof Error ? error.message : "Invalid request" },
       { status: 400 }
     );
   }
 }
 
 /**
- * Get user registrations (Phase 2)
- * GET /api/register?userId=...
+ * Get registrations by wallet
+ * GET /api/register?walletAddress=...
  */
 export async function GET(request: NextRequest) {
-  // Phase 2: Query registrations by user
-  return NextResponse.json(
-    {
-      note: "User registration retrieval coming in Phase 2",
-      registrations: [],
-    },
-    { status: 200 }
-  );
+  try {
+    const walletAddress = request.nextUrl.searchParams.get("walletAddress");
+
+    if (!walletAddress) {
+      return NextResponse.json({ error: "walletAddress is required" }, { status: 400 });
+    }
+
+    const registrations = await prisma.registration.findMany({
+      where: { walletAddress: walletAddress.toLowerCase() },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ registrations }, { status: 200 });
+  } catch (error) {
+    console.error("Registration list error:", error);
+    return NextResponse.json({ error: "Failed to load registrations" }, { status: 500 });
+  }
 }
