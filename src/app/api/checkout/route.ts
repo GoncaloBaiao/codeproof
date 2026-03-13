@@ -16,6 +16,13 @@ export async function POST(req: NextRequest) {
 
     // Append wallet address as custom data via query params
     const url = new URL(checkoutUrl);
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://codeproof.net").replace(/\/$/, "");
+    const successUrl = process.env.LEMON_SQUEEZY_SUCCESS_URL || `${appUrl}/dashboard`;
+    const cancelUrl = process.env.LEMON_SQUEEZY_CANCEL_URL || `${appUrl}/pricing`;
+
+    // Force production callbacks to avoid accidental vercel/localhost redirects.
+    url.searchParams.set("checkout[success_url]", successUrl);
+    url.searchParams.set("checkout[cancel_url]", cancelUrl);
     url.searchParams.set("checkout[custom][wallet_address]", walletAddress.toLowerCase());
 
     return NextResponse.json({ checkoutUrl: url.toString() });
