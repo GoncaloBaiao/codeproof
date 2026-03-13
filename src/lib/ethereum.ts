@@ -1,6 +1,6 @@
 import { Contract, JsonRpcProvider, Signer, BrowserProvider } from "ethers";
 
-const SEPOLIA_CHAIN_ID_HEX = "0xaa36a7"; // 11155111
+const POLYGON_AMOY_CHAIN_ID_HEX = "0x13882"; // 80002
 
 function getEthereumErrorCode(error: unknown): number | undefined {
   if (
@@ -15,7 +15,7 @@ function getEthereumErrorCode(error: unknown): number | undefined {
   return undefined;
 }
 
-async function ensureSepoliaNetwork(): Promise<void> {
+async function ensurePolygonAmoyNetwork(): Promise<void> {
   if (!window.ethereum?.request) {
     throw new Error("MetaMask not installed");
   }
@@ -24,55 +24,55 @@ async function ensureSepoliaNetwork(): Promise<void> {
     method: "eth_chainId",
   })) as string;
 
-  if (currentChainId?.toLowerCase() === SEPOLIA_CHAIN_ID_HEX) {
+  if (currentChainId?.toLowerCase() === POLYGON_AMOY_CHAIN_ID_HEX) {
     return;
   }
 
   try {
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: SEPOLIA_CHAIN_ID_HEX }],
+      params: [{ chainId: POLYGON_AMOY_CHAIN_ID_HEX }],
     });
   } catch (switchError: unknown) {
     const code = getEthereumErrorCode(switchError);
 
     if (code === 4001) {
-      throw new Error("Please switch to the Sepolia Test Network in MetaMask to register your code.");
+      throw new Error("Please switch to the Polygon Amoy Test Network in MetaMask to register your code.");
     }
 
     if (code === 4902) {
-      // If Sepolia is missing in wallet, add it then retry switch.
+      // If Polygon Amoy is missing in wallet, add it then retry switch.
       try {
         await window.ethereum.request({
           method: "wallet_addEthereumChain",
           params: [
             {
-              chainId: SEPOLIA_CHAIN_ID_HEX,
-              chainName: "Sepolia Testnet",
+              chainId: POLYGON_AMOY_CHAIN_ID_HEX,
+              chainName: "Polygon Amoy Testnet",
               nativeCurrency: {
-                name: "SepoliaETH",
-                symbol: "ETH",
+                name: "POL",
+                symbol: "POL",
                 decimals: 18,
               },
-              rpcUrls: ["https://rpc.sepolia.org"],
-              blockExplorerUrls: ["https://sepolia.etherscan.io"],
+              rpcUrls: ["https://rpc-amoy.polygon.technology"],
+              blockExplorerUrls: ["https://amoy.polygonscan.com"],
             },
           ],
         });
       } catch (addError: unknown) {
         if (getEthereumErrorCode(addError) === 4001) {
-          throw new Error("Please switch to the Sepolia Test Network in MetaMask to register your code.");
+          throw new Error("Please switch to the Polygon Amoy Test Network in MetaMask to register your code.");
         }
 
-        throw new Error("Unable to add Sepolia network in MetaMask. Please add it manually and try again.");
+        throw new Error("Unable to add Polygon Amoy network in MetaMask. Please add it manually and try again.");
       }
 
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: SEPOLIA_CHAIN_ID_HEX }],
+        params: [{ chainId: POLYGON_AMOY_CHAIN_ID_HEX }],
       });
     } else {
-      throw new Error("Please switch to the Sepolia Test Network in MetaMask to register your code.");
+      throw new Error("Please switch to the Polygon Amoy Test Network in MetaMask to register your code.");
     }
   }
 
@@ -80,8 +80,8 @@ async function ensureSepoliaNetwork(): Promise<void> {
     method: "eth_chainId",
   })) as string;
 
-  if (confirmedChainId?.toLowerCase() !== SEPOLIA_CHAIN_ID_HEX) {
-    throw new Error("Please switch to the Sepolia Test Network in MetaMask to register your code.");
+  if (confirmedChainId?.toLowerCase() !== POLYGON_AMOY_CHAIN_ID_HEX) {
+    throw new Error("Please switch to the Polygon Amoy Test Network in MetaMask to register your code.");
   }
 }
 
@@ -138,7 +138,7 @@ export function getReadOnlyContract(): Contract {
     throw new Error("NEXT_PUBLIC_CONTRACT_ADDRESS is not set");
   }
 
-  const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || "https://sepolia.infura.io/v3/";
+  const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || "https://rpc-amoy.polygon.technology";
   const provider = new JsonRpcProvider(rpcUrl);
 
   return new Contract(contractAddress, CODE_REGISTRY_ABI, provider);
@@ -220,7 +220,7 @@ export async function registerCodeOnBlockchain(
   hash: string,
   metadata: string
 ): Promise<string> {
-  await ensureSepoliaNetwork();
+  await ensurePolygonAmoyNetwork();
   const contract = await getWriteContract();
 
   try {

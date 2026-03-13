@@ -19,7 +19,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg sm:text-xl lg:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Register your code on the Ethereum blockchain and get an immutable proof of authorship, verifiable by anyone, anytime.
+              Register your code on the blockchain and get an immutable proof of authorship, verifiable by anyone, anytime.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
@@ -159,7 +159,7 @@ export default function Home() {
           <div className="p-12 md:p-16 bg-gradient-to-br from-gray-900/80 to-gray-800/50 border-2 border-blue-500/30 rounded-3xl text-center backdrop-blur-sm">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">Ready to Prove Your Code?</h2>
             <p className="text-lg text-gray-300 mb-10 leading-relaxed">
-              Connect your wallet and register your first code registration on the Ethereum blockchain. It takes less than a minute.
+              Connect your wallet and register your first code registration on the Polygon blockchain. It takes less than a minute.
             </p>
             <Link
               href="/register"

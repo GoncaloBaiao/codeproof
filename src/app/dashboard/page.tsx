@@ -244,7 +244,7 @@ export default function DashboardPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     {reg.txHash && (
                       <a
-                        href={`https://sepolia.etherscan.io/tx/${reg.txHash}`}
+                        href={`https://amoy.polygonscan.com/tx/${reg.txHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-400 hover:text-blue-300 transition"

@@ -4,7 +4,6 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "";
 const PRIVATE_KEY = process.env.PRIVATE_KEY
   ? `0x${process.env.PRIVATE_KEY.replace(/^0x/, "")}`
   : "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -14,9 +13,10 @@ const config: HardhatUserConfig = {
     version: "0.8.19",
   },
   networks: {
-    sepolia: {
-      url: SEPOLIA_RPC_URL,
+    amoy: {
+      url: process.env.POLYGON_AMOY_RPC_URL || "https://rpc-amoy.polygon.technology",
       accounts: [PRIVATE_KEY],
+      chainId: 80002,
     },
     hardhat: {
       // Local testing network (default)
