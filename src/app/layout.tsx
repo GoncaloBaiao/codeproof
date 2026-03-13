@@ -17,12 +17,9 @@ export const metadata: Metadata = {
   title: "CodeProof - Blockchain Code Authentication",
   description: "Prove that the code is yours. Forever. Register your code on the blockchain.",
   icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/favicon.ico" },
-    ],
-    apple: [{ url: "/apple-icon.png", type: "image/png" }],
-    shortcut: ["/icon.png"],
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/logo.png"],
   },
 };
 

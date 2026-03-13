@@ -21,7 +21,7 @@ export function BrandLogo({
   const content = (
     <>
       <Image
-        src="/Logo%20digital%20CodeProof%20com%20escudo%20e%20cadeado.png"
+        src="/logo.png"
         alt="CodeProof icon"
         width={iconSize}
         height={iconSize}
