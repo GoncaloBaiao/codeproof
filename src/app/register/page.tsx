@@ -11,6 +11,7 @@ import {
   registerCodeOnBlockchain,
 } from "@/lib/ethereum";
 import { useWallet } from "@/hooks/useWallet";
+import { generateCertificatePdf, downloadCertificate } from "@/lib/pdf";
 
 export default function RegisterPage() {
   const {
@@ -35,6 +36,9 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [registrationId, setRegistrationId] = useState<string | null>(null);
+  const [registeredProjectName, setRegisteredProjectName] = useState<string>("");
+  const [registeredHash, setRegisteredHash] = useState<string>("");
   const [showLimitModal, setShowLimitModal] = useState(false);
 
   const handleGenerateHash = async () => {
@@ -108,7 +112,12 @@ export default function RegisterPage() {
         throw new Error(saveData?.error || "Failed to save registration to database");
       }
 
+      const saveData = await saveResponse.json();
+
       setTxHash(transaction);
+      setRegistrationId(saveData.registrationId ?? null);
+      setRegisteredProjectName(projectName);
+      setRegisteredHash(hash);
       setSuccess(
         `✓ Code registered successfully! Transaction: ${transaction?.slice(0, 16)}...`
       );
@@ -116,7 +125,7 @@ export default function RegisterPage() {
       // Refresh status to update counters
       await refreshStatus();
 
-      // Reset form
+      // Reset form fields (but keep success state)
       setCode("");
       setHash(null);
       setProjectName("");
@@ -221,10 +230,91 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Success Message */}
+            {/* Success Card */}
             {success && (
-              <div className="p-4 bg-green-900/20 border border-green-500/50 rounded-xl text-green-400 text-sm font-medium">
-                ✓ {success}
+              <div className="p-8 bg-green-900/20 border border-green-500/30 rounded-2xl space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 flex items-center justify-center bg-green-500/20 rounded-full text-green-400 text-xl">✓</div>
+                  <h3 className="text-xl font-bold text-green-400">Código registado com sucesso!</h3>
+                </div>
+
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-gray-500">Hash:</span>
+                    <code className="ml-2 text-green-400 font-mono text-xs break-all">{registeredHash}</code>
+                  </div>
+                  {txHash && (
+                    <div>
+                      <span className="text-gray-500">Transaction:</span>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 text-blue-400 hover:text-blue-300 font-mono text-xs break-all hover:underline transition"
+                      >
+                        {txHash}
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-2">
+                  {isPro ? (
+                    <button
+                      onClick={() => {
+                        const pdf = generateCertificatePdf({
+                          projectName: registeredProjectName,
+                          hash: registeredHash,
+                          walletAddress: address ?? "",
+                          txHash: txHash ?? "",
+                          timestamp: new Date().toLocaleString("pt-PT"),
+                          registrationId: registrationId ?? "",
+                        });
+                        downloadCertificate(pdf, registeredProjectName);
+                      }}
+                      className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-semibold transition-all text-sm"
+                    >
+                      📄 Download Certificate
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      title="Upgrade to PRO to download certificates"
+                      className="px-5 py-2.5 bg-gray-700 text-gray-400 rounded-lg font-semibold text-sm cursor-not-allowed"
+                    >
+                      📄 Download Certificate
+                    </button>
+                  )}
+
+                  <Link
+                    href="/dashboard"
+                    className="px-5 py-2.5 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition text-sm"
+                  >
+                    Ver no Dashboard
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      setSuccess(null);
+                      setTxHash(null);
+                      setRegistrationId(null);
+                      setRegisteredProjectName("");
+                      setRegisteredHash("");
+                    }}
+                    className="px-5 py-2.5 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition text-sm"
+                  >
+                    Registar outro código
+                  </button>
+                </div>
+
+                {!isPro && (
+                  <p className="text-xs text-gray-500 pt-1">
+                    Certificados PDF disponíveis no plano PRO.{" "}
+                    <Link href="/pricing" className="text-blue-400 hover:underline">
+                      Upgrade →
+                    </Link>
+                  </p>
+                )}
               </div>
             )}
 
@@ -285,20 +375,6 @@ export default function RegisterPage() {
               </ul>
             </div>
 
-            {/* Transaction Link */}
-            {txHash && (
-              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
-                <h4 className="font-bold text-white mb-4">Transaction</h4>
-                <a
-                  href={`https://sepolia.etherscan.io/tx/${txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 text-sm font-mono break-all hover:underline transition-colors"
-                >
-                  View on Etherscan →
-                </a>
-              </div>
-            )}
           </div>
 
           {/* Limit Reached Modal */}

@@ -27,32 +27,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate license with Lemon Squeezy API
-    const apiKey = process.env.LEMON_SQUEEZY_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { success: false, message: "License validation service unavailable" },
-        { status: 503 }
-      );
-    }
-
-    const lsResponse = await fetch("https://api.lemonsqueezy.com/v1/licenses/validate", {
+    // Validate license with Lemon Squeezy
+    const validateResponse = await fetch("https://api.lemonsqueezy.com/v1/licenses/validate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ license_key: trimmedKey }),
+      body: JSON.stringify({
+        license_key: trimmedKey,
+        instance_name: normalized,
+      }),
     });
 
-    const lsData = await lsResponse.json();
+    const validateData = await validateResponse.json();
 
-    if (!lsData.valid) {
+    if (!validateData.valid) {
       return NextResponse.json(
-        { success: false, message: lsData.error || "Invalid license key" },
+        { success: false, message: validateData.error || "Invalid or expired license key" },
         { status: 400 }
       );
     }
+
+    // Activate license instance on Lemon Squeezy
+    await fetch("https://api.lemonsqueezy.com/v1/licenses/activate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        license_key: trimmedKey,
+        instance_name: normalized,
+      }),
+    });
 
     // Activate: upsert user and assign PRO + license
     await prisma.walletUser.upsert({

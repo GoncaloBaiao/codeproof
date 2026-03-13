@@ -1,109 +1,157 @@
 import jsPDF from "jspdf";
 
+export interface CertificateData {
+  projectName: string;
+  hash: string;
+  walletAddress: string;
+  txHash: string;
+  timestamp: string;
+  registrationId: string;
+}
+
 /**
  * Generate a certificate PDF for code registration
- *
- * @param projectName Name of the project
- * @param authorAddress Ethereum address of the author (formatted)
- * @param codeHash SHA-256 hash of the code
- * @param timestamp When the code was registered
- * @param txHash Ethereum transaction hash
- * @returns PDF blob
  */
-export function generateCertificatePdf(
-  projectName: string,
-  authorAddress: string,
-  codeHash: string,
-  timestamp: Date,
-  txHash: string
-): Blob {
+export function generateCertificatePdf(data: CertificateData): Blob {
+  const { projectName, hash, walletAddress, txHash, timestamp, registrationId } = data;
+
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
     format: "a4",
   });
 
-  // Set background color (dark professional background)
+  // Background
   doc.setFillColor(20, 20, 40);
   doc.rect(0, 0, 210, 297, "F");
 
-  // Set text color to white
+  // Outer border
+  doc.setDrawColor(100, 150, 255);
+  doc.setLineWidth(0.8);
+  doc.rect(12, 12, 186, 273);
+  doc.setLineWidth(0.3);
+  doc.rect(14, 14, 182, 269);
+
+  // Header
+  doc.setTextColor(100, 150, 255);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("CODEPROOF", 105, 30, { align: "center" });
+
   doc.setTextColor(255, 255, 255);
+  doc.setFontSize(28);
+  doc.text("Certificate of Code Authorship", 105, 45, { align: "center" });
 
-  // Title
-  doc.setFontSize(32);
-  doc.setFont("Arial", "bold");
-  doc.text("CODE CERTIFICATE", 105, 40, { align: "center" });
-
-  // Subtitle
-  doc.setFontSize(12);
-  doc.setFont("Arial");
-  doc.text("Proof of Code Authorship", 105, 50, { align: "center" });
-
-  // Border
+  // Decorative line
   doc.setDrawColor(100, 150, 255);
   doc.setLineWidth(0.5);
-  doc.rect(15, 60, 180, 200);
+  doc.line(40, 52, 170, 52);
 
-  // Content
-  doc.setFontSize(11);
-  doc.setFont("Arial", "bold");
-
-  let yPos = 75;
-  const lineHeight = 10;
-
-  doc.text("Project Name:", 25, yPos);
-  doc.setFont("Arial", "normal");
-  const projectNameX = doc.getTextWidth("Project Name:") + 26;
-  doc.text(projectName, projectNameX, yPos);
-
-  yPos += lineHeight;
-  doc.setFont("Arial", "bold");
-  doc.text("Author Address:", 25, yPos);
-  doc.setFont("Arial", "normal");
-  doc.text(authorAddress, projectNameX, yPos);
-
-  yPos += lineHeight * 1.5;
-  doc.setFont("Arial", "bold");
-  doc.text("Code Hash (SHA-256):", 25, yPos);
-  doc.setFont("Arial", "normal");
+  // Registration ID
+  doc.setTextColor(150, 150, 170);
   doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Certificate ID: ${registrationId}`, 105, 60, { align: "center" });
 
-  // Wrap long hash
-  const hashLines = doc.splitTextToSize(codeHash, 160);
-  doc.text(hashLines, 25, yPos + 5);
+  // Content section
+  let yPos = 78;
+  const labelX = 25;
+  const valueX = 25;
+  const sectionGap = 22;
 
-  yPos += lineHeight * 3;
-  doc.setFontSize(11);
-  doc.setFont("Arial", "bold");
-  doc.text("Registration Date & Time:", 25, yPos);
-  doc.setFont("Arial", "normal");
-  doc.text(timestamp.toLocaleString(), projectNameX, yPos);
-
-  yPos += lineHeight;
-  doc.setFont("Arial", "bold");
-  doc.text("Transaction Hash:", 25, yPos);
-  doc.setFont("Arial", "normal");
+  // Project Name
+  doc.setTextColor(100, 150, 255);
   doc.setFontSize(9);
-  const txHashLines = doc.splitTextToSize(txHash, 160);
-  doc.text(txHashLines, 25, yPos + 5);
+  doc.setFont("helvetica", "bold");
+  doc.text("PROJECT NAME", labelX, yPos);
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text(projectName, valueX, yPos + 7);
 
-  yPos += lineHeight * 4;
+  // Code Hash
+  yPos += sectionGap;
+  doc.setTextColor(100, 150, 255);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("CODE HASH (SHA-256)", labelX, yPos);
+  doc.setTextColor(200, 200, 200);
+  doc.setFontSize(8);
+  doc.setFont("courier", "normal");
+  const hashLines = doc.splitTextToSize(hash, 160);
+  doc.text(hashLines, valueX, yPos + 7);
+
+  // Author Address
+  yPos += sectionGap + (hashLines.length > 1 ? 5 : 0);
+  doc.setTextColor(100, 150, 255);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("AUTHOR (ETHEREUM ADDRESS)", labelX, yPos);
+  doc.setTextColor(200, 200, 200);
+  doc.setFontSize(9);
+  doc.setFont("courier", "normal");
+  doc.text(walletAddress, valueX, yPos + 7);
+
+  // Transaction Hash
+  yPos += sectionGap;
+  doc.setTextColor(100, 150, 255);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("TRANSACTION HASH", labelX, yPos);
+  doc.setTextColor(200, 200, 200);
+  doc.setFontSize(8);
+  doc.setFont("courier", "normal");
+  if (txHash) {
+    const txLines = doc.splitTextToSize(txHash, 160);
+    doc.text(txLines, valueX, yPos + 7);
+  } else {
+    doc.text("N/A", valueX, yPos + 7);
+  }
+
+  // Etherscan link
+  if (txHash) {
+    yPos += 14;
+    doc.setTextColor(100, 150, 255);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    const etherscanUrl = `https://sepolia.etherscan.io/tx/${txHash}`;
+    doc.textWithLink(`View on Etherscan: ${etherscanUrl}`, valueX, yPos, { url: etherscanUrl });
+  }
+
+  // Registration Date
+  yPos += sectionGap;
+  doc.setTextColor(100, 150, 255);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("REGISTRATION DATE & TIME", labelX, yPos);
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.text(timestamp, valueX, yPos + 7);
+
+  // Statement
+  yPos += sectionGap + 10;
+  doc.setDrawColor(100, 150, 255);
+  doc.setLineWidth(0.3);
+  doc.line(25, yPos - 3, 185, yPos - 3);
+
+  doc.setTextColor(220, 220, 230);
   doc.setFontSize(10);
-  doc.setFont("Arial", "italic");
-  doc.text(
-    "This certificate proves the authenticity and timestamp of the code on the Ethereum blockchain.",
-    105,
-    yPos,
-    { align: "center" }
-  );
+  doc.setFont("helvetica", "italic");
+  const statement =
+    "This certificate proves that the above code hash was registered on the Ethereum Sepolia blockchain at the above timestamp, providing immutable proof of authorship.";
+  const stmtLines = doc.splitTextToSize(statement, 160);
+  doc.text(stmtLines, 105, yPos + 5, { align: "center" });
 
   // Footer
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 170);
-  doc.text("CodeProof - Blockchain Code Authentication", 105, 285, {
+  doc.setFont("helvetica", "normal");
+  doc.text("CodeProof — Blockchain Code Authentication", 105, 278, {
     align: "center",
   });
+  const verifyUrl = `codeproof.io/verify/${hash}`;
+  doc.text(`Verify at: ${verifyUrl}`, 105, 283, { align: "center" });
 
   return doc.output("blob");
 }
