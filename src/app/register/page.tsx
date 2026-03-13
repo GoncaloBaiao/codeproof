@@ -152,7 +152,7 @@ export default function RegisterPage() {
             {/* Registration counter for FREE */}
             {isConnected && !isPro && (
               <p className="text-sm text-gray-500 mt-2">
-                {registrationsUsed} / {registrationsLimit} registos este mês
+                {registrationsUsed} / {registrationsLimit} registrations this month
               </p>
             )}
           </div>
@@ -235,7 +235,7 @@ export default function RegisterPage() {
               <div className="p-8 bg-green-900/20 border border-green-500/30 rounded-2xl space-y-5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 flex items-center justify-center bg-green-500/20 rounded-full text-green-400 text-xl">✓</div>
-                  <h3 className="text-xl font-bold text-green-400">Código registado com sucesso!</h3>
+                  <h3 className="text-xl font-bold text-green-400">Code registered successfully!</h3>
                 </div>
 
                 <div className="space-y-2 text-sm">
@@ -267,7 +267,7 @@ export default function RegisterPage() {
                           hash: registeredHash,
                           walletAddress: address ?? "",
                           txHash: txHash ?? "",
-                          timestamp: new Date().toLocaleString("pt-PT"),
+                          timestamp: new Date().toLocaleString("en-US"),
                           registrationId: registrationId ?? "",
                         });
                         downloadCertificate(pdf, registeredProjectName);
@@ -290,7 +290,7 @@ export default function RegisterPage() {
                     href="/dashboard"
                     className="px-5 py-2.5 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition text-sm"
                   >
-                    Ver no Dashboard
+                    View Dashboard
                   </Link>
 
                   <button
@@ -303,13 +303,13 @@ export default function RegisterPage() {
                     }}
                     className="px-5 py-2.5 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition text-sm"
                   >
-                    Registar outro código
+                    Register another code
                   </button>
                 </div>
 
                 {!isPro && (
                   <p className="text-xs text-gray-500 pt-1">
-                    Certificados PDF disponíveis no plano PRO.{" "}
+                    PDF certificates available on PRO plan.{" "}
                     <Link href="/pricing" className="text-blue-400 hover:underline">
                       Upgrade →
                     </Link>
@@ -381,23 +381,23 @@ export default function RegisterPage() {
           {showLimitModal && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-md w-full">
-                <h3 className="text-xl font-bold text-white mb-3">Limite Atingido</h3>
+                <h3 className="text-xl font-bold text-white mb-3">Limit Reached</h3>
                 <p className="text-gray-400 mb-6">
-                  Atingiste o limite de {registrationsLimit} registos mensais do plano Free.
-                  Faz upgrade para PRO para registos ilimitados.
+                  You've reached the {registrationsLimit} monthly registrations limit on the Free plan.
+                  Upgrade to PRO for unlimited registrations.
                 </p>
                 <div className="flex gap-3">
                   <Link
                     href="/pricing"
                     className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-semibold transition-all text-center"
                   >
-                    Upgrade para PRO
+                    Upgrade to PRO
                   </Link>
                   <button
                     onClick={() => setShowLimitModal(false)}
                     className="px-6 py-3 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition"
                   >
-                    Fechar
+                    Close
                   </button>
                 </div>
               </div>

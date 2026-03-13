@@ -129,7 +129,7 @@ const CODE_REGISTRY_ABI = [
 
 /**
  * Get the CodeRegistry contract instance (read-only)
- * Connects to Ethereum RPC provider
+ * Connects to Polygon RPC provider
  */
 export function getReadOnlyContract(): Contract {
   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;

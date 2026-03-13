@@ -86,7 +86,7 @@ export function generateCertificatePdf(data: CertificateData): Blob {
   doc.setTextColor(100, 150, 255);
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.text("AUTHOR (ETHEREUM ADDRESS)", labelX, yPos);
+  doc.text("AUTHOR (POLYGON ADDRESS)", labelX, yPos);
   doc.setTextColor(200, 200, 200);
   doc.setFontSize(9);
   doc.setFont("courier", "normal");
@@ -108,14 +108,14 @@ export function generateCertificatePdf(data: CertificateData): Blob {
     doc.text("N/A", valueX, yPos + 7);
   }
 
-  // Etherscan link
+  // Polygonscan link
   if (txHash) {
     yPos += 14;
     doc.setTextColor(100, 150, 255);
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    const etherscanUrl = `https://amoy.polygonscan.com/tx/${txHash}`;
-    doc.textWithLink(`View on Etherscan: ${etherscanUrl}`, valueX, yPos, { url: etherscanUrl });
+    const polygonscanUrl = `https://amoy.polygonscan.com/tx/${txHash}`;
+    doc.textWithLink(`View on Polygonscan: ${polygonscanUrl}`, valueX, yPos, { url: polygonscanUrl });
   }
 
   // Registration Date

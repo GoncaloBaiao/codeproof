@@ -62,7 +62,7 @@ export default function DashboardPage() {
       hash: reg.hash,
       walletAddress: address ?? "",
       txHash: reg.txHash ?? "",
-      timestamp: new Date(reg.createdAt).toLocaleString("pt-PT"),
+      timestamp: new Date(reg.createdAt).toLocaleString("en-US"),
       registrationId: reg.id,
     });
     downloadCertificate(pdf, reg.projectName);
@@ -73,12 +73,12 @@ export default function DashboardPage() {
       <main className="min-h-screen w-full bg-gradient-to-b from-gray-950 to-gray-900">
         <div className="max-w-5xl mx-auto px-6 py-24 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Dashboard</h1>
-          <p className="text-gray-400 text-lg mb-12">Conecta a tua wallet para aceder ao dashboard.</p>
+          <p className="text-gray-400 text-lg mb-12">Connect your wallet to access the dashboard.</p>
           <button
             onClick={connect}
             className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
           >
-            Conectar MetaMask
+            Connect MetaMask
           </button>
         </div>
         <Footer />
@@ -105,24 +105,24 @@ export default function DashboardPage() {
             href="/register"
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition text-center"
           >
-            Novo Registo
+            New Registration
           </Link>
         </div>
 
         {/* Usage Card */}
         <div className="p-8 bg-gray-900/50 border border-gray-800 rounded-2xl mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Utilização Este Mês</h2>
+          <h2 className="text-xl font-bold text-white mb-4">This Month's Usage</h2>
 
           {isPro ? (
             <div className="flex items-center gap-2 text-purple-400">
               <span className="text-2xl font-bold">{registrationsUsed}</span>
-              <span className="text-gray-400">registos — Ilimitado ⚡</span>
+              <span className="text-gray-400">registrations — Unlimited ⚡</span>
             </div>
           ) : (
             <>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-gray-300 text-sm">
-                  {registrationsUsed} / {registrationsLimit} registos este mês
+                  {registrationsUsed} / {registrationsLimit} registrations this month
                 </span>
                 <span className="text-gray-500 text-sm">{Math.round(progressPct)}%</span>
               </div>
@@ -140,9 +140,9 @@ export default function DashboardPage() {
               </div>
               {!canRegister && (
                 <p className="text-red-400 text-sm mt-3">
-                  Atingiste o limite mensal.{" "}
+                  Monthly limit reached.{" "}
                   <Link href="/pricing" className="text-blue-400 hover:underline">
-                    Faz upgrade para PRO →
+                    Upgrade to PRO →
                   </Link>
                 </p>
               )}
@@ -155,16 +155,16 @@ export default function DashboardPage() {
           <div className="p-8 bg-gradient-to-r from-blue-950/50 to-purple-950/50 border border-blue-500/30 rounded-2xl mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold text-white mb-1">Desbloqueia Registos Ilimitados</h3>
+                <h3 className="text-lg font-bold text-white mb-1">Unlock Unlimited Registrations</h3>
                 <p className="text-gray-400 text-sm">
-                  Faz upgrade para PRO e obtém registos ilimitados, certificados PDF e suporte prioritário.
+                  Upgrade to PRO for unlimited registrations, PDF certificates, and priority support.
                 </p>
               </div>
               <Link
                 href="/pricing"
                 className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-semibold transition-all whitespace-nowrap text-center"
               >
-                Upgrade para PRO — €9/mês
+                Upgrade to PRO — €9/mo
               </Link>
             </div>
           </div>
@@ -180,12 +180,12 @@ export default function DashboardPage() {
         {/* My Registrations */}
         <div className="p-8 bg-gray-900/50 border border-gray-800 rounded-2xl mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">Os meus registos</h2>
+            <h2 className="text-xl font-bold text-white">My Registrations</h2>
             <Link
               href="/register"
               className="text-sm text-blue-400 hover:text-blue-300 transition"
             >
-              + Novo registo
+              + New Registration
             </Link>
           </div>
 
@@ -195,12 +195,12 @@ export default function DashboardPage() {
             </div>
           ) : registrations.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-400 mb-4">Ainda não tens registos. Regista o teu primeiro código!</p>
+              <p className="text-gray-400 mb-4">No registrations yet. Register your first code!</p>
               <Link
                 href="/register"
                 className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
               >
-                Registar Código
+                Register Code
               </Link>
             </div>
           ) : (
@@ -228,9 +228,9 @@ export default function DashboardPage() {
                       <code className="ml-2 text-green-400 font-mono text-xs">{reg.hash.slice(0, 16)}...</code>
                     </div>
                     <div>
-                      <span className="text-gray-500">Data:</span>
+                      <span className="text-gray-500">Date:</span>
                       <span className="ml-2 text-gray-300">
-                        {new Date(reg.createdAt).toLocaleDateString("pt-PT", {
+                        {new Date(reg.createdAt).toLocaleDateString("en-US", {
                           day: "2-digit",
                           month: "long",
                           year: "numeric",
@@ -249,7 +249,7 @@ export default function DashboardPage() {
                         rel="noopener noreferrer"
                         className="text-sm text-blue-400 hover:text-blue-300 transition"
                       >
-                        Ver no Etherscan →
+                        View on Polygonscan →
                       </a>
                     )}
 
@@ -282,9 +282,9 @@ export default function DashboardPage() {
             href="/register"
             className="p-8 bg-gray-800/50 border border-gray-700 rounded-xl hover:border-blue-500/50 transition-all duration-200 block"
           >
-            <h3 className="font-bold text-white mb-3">📝 Registar Código</h3>
+            <h3 className="font-bold text-white mb-3">📝 Register Code</h3>
             <p className="text-gray-400">
-              Regista o hash do teu código na blockchain Ethereum.
+              Register your code hash on the Polygon blockchain.
             </p>
           </Link>
 
@@ -292,9 +292,9 @@ export default function DashboardPage() {
             href="/verify"
             className="p-8 bg-gray-800/50 border border-gray-700 rounded-xl hover:border-blue-500/50 transition-all duration-200 block"
           >
-            <h3 className="font-bold text-white mb-3">🔍 Verificar Código</h3>
+            <h3 className="font-bold text-white mb-3">🔍 Verify Code</h3>
             <p className="text-gray-400">
-              Verifica a autoria de código registado na blockchain.
+              Verify code authorship registered on the blockchain.
             </p>
           </Link>
         </div>

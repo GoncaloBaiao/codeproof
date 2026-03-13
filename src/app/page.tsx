@@ -78,7 +78,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">Register Blockchain</h3>
               <p className="text-gray-400 leading-relaxed">
-                Register the hash on Ethereum with your wallet. Immutable, timestamped proof.
+                Register the hash on Polygon with your wallet. Immutable, timestamped proof.
               </p>
             </div>
           </div>
