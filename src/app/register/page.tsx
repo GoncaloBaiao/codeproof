@@ -247,7 +247,7 @@ export default function RegisterPage() {
                     <div>
                       <span className="text-gray-500">Transaction:</span>
                       <a
-                        href={`https://amoy.polygonscan.com/tx/${txHash}`}
+                        href={`https://polygonscan.com/tx/${txHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="ml-2 text-blue-400 hover:text-blue-300 font-mono text-xs break-all hover:underline transition"
@@ -362,7 +362,7 @@ export default function RegisterPage() {
                 </li>
                 <li className="flex gap-2">
                   <span className="text-blue-400 font-bold">✓</span>
-                  <span>Hash is stored on Polygon Amoy</span>
+                  <span>Hash is stored on Polygon mainnet</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-blue-400 font-bold">✓</span>

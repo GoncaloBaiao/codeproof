@@ -114,7 +114,7 @@ export function generateCertificatePdf(data: CertificateData): Blob {
     doc.setTextColor(100, 150, 255);
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    const polygonscanUrl = `https://amoy.polygonscan.com/tx/${txHash}`;
+    const polygonscanUrl = `https://polygonscan.com/tx/${txHash}`;
     doc.textWithLink(`View on Polygonscan: ${polygonscanUrl}`, valueX, yPos, { url: polygonscanUrl });
   }
 
@@ -139,7 +139,7 @@ export function generateCertificatePdf(data: CertificateData): Blob {
   doc.setFontSize(10);
   doc.setFont("helvetica", "italic");
   const statement =
-    "This certificate proves that the above code hash was registered on the Polygon Amoy blockchain at the above timestamp, providing immutable proof of authorship.";
+    "This certificate proves that the above code hash was registered on the Polygon blockchain at the above timestamp, providing immutable proof of authorship.";
   const stmtLines = doc.splitTextToSize(statement, 160);
   doc.text(stmtLines, 105, yPos + 5, { align: "center" });
 

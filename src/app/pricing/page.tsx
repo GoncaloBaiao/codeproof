@@ -85,7 +85,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-center text-gray-300">
                     <span className="w-5 h-5 rounded-full bg-blue-500/30 text-blue-400 flex items-center justify-center mr-3 text-xs">✓</span>
-                    Polygon Amoy testnet
+                    Polygon blockchain
                   </li>
                   <li className="flex items-center text-gray-400">
                     <span className="w-5 h-5 rounded-full bg-gray-700/30 text-gray-600 flex items-center justify-center mr-3 text-xs">✗</span>

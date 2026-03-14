@@ -281,12 +281,12 @@ export default function VerifyPage() {
                 <h4 className="font-bold text-white mb-4 text-lg">Quick Links</h4>
                 <div className="space-y-3">
                   <a
-                    href="https://amoy.polygonscan.com"
+                    href="https://polygonscan.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-blue-400 hover:text-blue-300 font-medium transition-colors"
                   >
-                    Polygon Amoy Explorer →
+                    Polygon Explorer →
                   </a>
                   <a
                     href="/register"
