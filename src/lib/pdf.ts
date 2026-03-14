@@ -150,7 +150,7 @@ export function generateCertificatePdf(data: CertificateData): Blob {
   doc.text("CodeProof — Blockchain Code Authentication", 105, 278, {
     align: "center",
   });
-  const verifyUrl = `codeproof.io/verify/${hash}`;
+  const verifyUrl = `codeproof.net/verify/${hash}`;
   doc.text(`Verify at: ${verifyUrl}`, 105, 283, { align: "center" });
 
   return doc.output("blob");
