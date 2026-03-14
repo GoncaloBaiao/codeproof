@@ -15,8 +15,49 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CodeProof - Blockchain Code Authentication",
-  description: "Prove that the code is yours. Forever. Register your code on the blockchain.",
+  title: "CodeProof - Prove Your Code Ownership on the Blockchain",
+  description:
+    "Register your code on the Polygon blockchain and get an immutable proof of authorship. Verifiable by anyone, anytime. Free to start.",
+  keywords: [
+    "blockchain",
+    "code ownership",
+    "proof of authorship",
+    "polygon",
+    "developer tools",
+    "SHA-256",
+    "smart contract",
+  ],
+  openGraph: {
+    title: "CodeProof - Prove Your Code Ownership on the Blockchain",
+    description:
+      "Register your code on the Polygon blockchain and get an immutable proof of authorship. Verifiable by anyone, anytime.",
+    url: "https://codeproof.net",
+    siteName: "CodeProof",
+    images: [
+      {
+        url: "https://codeproof.net/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "CodeProof - Blockchain Code Ownership",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CodeProof - Prove Your Code Ownership on the Blockchain",
+    description:
+      "Register your code on the Polygon blockchain and get an immutable proof of authorship.",
+    images: ["https://codeproof.net/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://codeproof.net",
+  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
