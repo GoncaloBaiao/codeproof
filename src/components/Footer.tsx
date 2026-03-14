@@ -14,7 +14,7 @@ export function Footer() {
             compact
           />
           <div className="text-gray-500 text-sm">
-            <p>&copy; 2024 CodeProof. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} CodeProof. All rights reserved.</p>
           </div>
         </div>
       </div>
