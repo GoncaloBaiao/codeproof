@@ -18,6 +18,16 @@ export async function generateHash(code: string): Promise<string> {
 }
 
 /**
+ * Generate SHA-256 hash from raw bytes (e.g. a ZIP bundle).
+ * Runs entirely in the browser via Web Crypto API.
+ */
+export async function generateHashFromBytes(bytes: Uint8Array): Promise<string> {
+  const hashBuffer = await crypto.subtle.digest("SHA-256", bytes as unknown as BufferSource);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+/**
  * Verify that a code produces the expected hash
  *
  * @param code The code to verify

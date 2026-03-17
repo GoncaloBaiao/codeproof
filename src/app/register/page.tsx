@@ -6,12 +6,24 @@ import { CodeEditor } from "@/components/CodeEditor";
 import { HashDisplay } from "@/components/HashDisplay";
 import { Footer } from "@/components/Footer";
 import { PlanBadge } from "@/components/PlanBadge";
-import { generateHash } from "@/lib/hash";
+import { generateHash, generateHashFromBytes } from "@/lib/hash";
 import {
   registerCodeOnBlockchain,
 } from "@/lib/ethereum";
 import { useWallet } from "@/hooks/useWallet";
 import { generateCertificatePdf, downloadCertificate } from "@/lib/pdf";
+import { buildSafeZipFromDirectory, type BundleStats } from "@/lib/folderBundle";
+
+type Mode = "paste" | "folder";
+
+const FREE_ZIP_MAX = 10 * 1024 * 1024;   // 10 MB
+const PRO_ZIP_MAX = 250 * 1024 * 1024;   // 250 MB
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
 
 export default function RegisterPage() {
   const {
@@ -41,6 +53,18 @@ export default function RegisterPage() {
   const [registeredHash, setRegisteredHash] = useState<string>("");
   const [showLimitModal, setShowLimitModal] = useState(false);
 
+  // Mode switch
+  const [mode, setMode] = useState<Mode>("paste");
+
+  // Folder mode state
+  const [folderStats, setFolderStats] = useState<BundleStats | null>(null);
+  const [zipBytes, setZipBytes] = useState<Uint8Array | null>(null);
+  const [isBundling, setIsBundling] = useState(false);
+  const [showSizeModal, setShowSizeModal] = useState(false);
+
+  const supportsDirectoryPicker = typeof window !== "undefined" && "showDirectoryPicker" in window;
+  const zipMaxBytes = isPro ? PRO_ZIP_MAX : FREE_ZIP_MAX;
+
   const handleGenerateHash = async () => {
     if (!code.trim()) {
       setError("Please paste some code first");
@@ -59,6 +83,61 @@ export default function RegisterPage() {
       setIsHashing(false);
     }
   };
+
+  // ---- Folder mode handlers ------------------------------------------------
+
+  const handleSelectFolder = async () => {
+    setError(null);
+    setHash(null);
+    setFolderStats(null);
+    setZipBytes(null);
+
+    try {
+      const dirHandle = await (window as unknown as { showDirectoryPicker: () => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker();
+      setIsBundling(true);
+
+      const result = await buildSafeZipFromDirectory(dirHandle);
+
+      if (result.stats.zipSizeBytes > zipMaxBytes) {
+        setFolderStats(result.stats);
+        setShowSizeModal(true);
+        setIsBundling(false);
+        return;
+      }
+
+      setZipBytes(result.zipBytes);
+      setFolderStats(result.stats);
+
+      if (!projectName) {
+        setProjectName(result.stats.rootFolderName);
+      }
+    } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === "AbortError") return; // user cancelled
+      const msg = err instanceof Error ? err.message : "Failed to read folder";
+      setError(msg);
+    } finally {
+      setIsBundling(false);
+    }
+  };
+
+  const handleFolderGenerateHash = async () => {
+    if (!zipBytes) {
+      setError("Select a folder first");
+      return;
+    }
+    setIsHashing(true);
+    setError(null);
+    try {
+      const h = await generateHashFromBytes(zipBytes);
+      setHash(h);
+    } catch {
+      setError("Failed to generate hash from ZIP bundle");
+    } finally {
+      setIsHashing(false);
+    }
+  };
+
+  // ---- Registration (shared by both modes) ---------------------------------
 
   const handleRegister = async () => {
     if (!hash) {
@@ -86,11 +165,22 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const metadata = JSON.stringify({
+      const metaObj: Record<string, unknown> = {
         projectName,
         description: description || null,
         timestamp: new Date().toISOString(),
-      });
+      };
+
+      if (mode === "folder" && folderStats) {
+        metaObj.bundleType = "folder-zip";
+        metaObj.rootFolderName = folderStats.rootFolderName;
+        metaObj.includedFilesCount = folderStats.includedFilesCount;
+        metaObj.zipSizeBytes = folderStats.zipSizeBytes;
+        metaObj.excludedPatterns = folderStats.excludedPatternsUsed;
+        metaObj.skippedSummary = folderStats.skippedReasons;
+      }
+
+      const metadata = JSON.stringify(metaObj);
 
       const transaction = await registerCodeOnBlockchain(hash, metadata);
 
@@ -130,6 +220,8 @@ export default function RegisterPage() {
       setHash(null);
       setProjectName("");
       setDescription("");
+      setZipBytes(null);
+      setFolderStats(null);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
       setError(`Registration failed: ${message}`);
@@ -147,7 +239,7 @@ export default function RegisterPage() {
               {isConnected && <PlanBadge plan={plan} />}
             </div>
             <p className="text-lg text-gray-400 leading-relaxed">
-              Paste your code, generate a hash, and register it on the blockchain. Everything happens locally on your computer.
+              Paste your code or select a project folder, generate a hash, and register it on the blockchain. Everything happens locally on your computer.
             </p>
             {/* Registration counter for FREE */}
             {isConnected && !isPro && (
@@ -158,25 +250,119 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-10 w-full">
-            {/* Code Editor Section */}
-            <div className="space-y-4">
-              <div>
-                <label className="text-label">Source Code *</label>
-                <p className="text-sm text-gray-500 mb-4">
-                  Your code never leaves your computer. It only generates a hash locally.
-                </p>
-              </div>
-              <CodeEditor value={code} onChange={setCode} />
+            {/* Mode Tabs */}
+            <div className="flex rounded-xl overflow-hidden border border-gray-700">
+              <button
+                onClick={() => { setMode("paste"); setError(null); }}
+                className={`flex-1 px-6 py-3 font-semibold text-sm transition-all ${
+                  mode === "paste"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+                }`}
+              >
+                Paste Code
+              </button>
+              <button
+                onClick={() => { setMode("folder"); setError(null); }}
+                className={`flex-1 px-6 py-3 font-semibold text-sm transition-all ${
+                  mode === "folder"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+                }`}
+              >
+                Select Folder (safe)
+              </button>
             </div>
 
-            {/* Generate Hash Button */}
-            <button
-              onClick={handleGenerateHash}
-              disabled={isHashing || !code.trim()}
-              className="w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl font-bold transition-all duration-200 text-lg"
-            >
-              {isHashing ? "Generating Hash..." : "Generate Hash"}
-            </button>
+            {/* Paste Code Mode */}
+            {mode === "paste" && (
+              <>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-label">Source Code *</label>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Your code never leaves your computer. It only generates a hash locally.
+                    </p>
+                  </div>
+                  <CodeEditor value={code} onChange={setCode} />
+                </div>
+                <button
+                  onClick={handleGenerateHash}
+                  disabled={isHashing || !code.trim()}
+                  className="w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl font-bold transition-all duration-200 text-lg"
+                >
+                  {isHashing ? "Generating Hash..." : "Generate Hash"}
+                </button>
+              </>
+            )}
+
+            {/* Folder Mode */}
+            {mode === "folder" && (
+              <>
+                {!supportsDirectoryPicker ? (
+                  <div className="p-6 bg-yellow-900/20 border border-yellow-500/30 rounded-2xl text-yellow-300 text-sm">
+                    Folder selection requires <strong>Chrome</strong> or <strong>Edge</strong>. Please use the <button onClick={() => setMode("paste")} className="underline font-semibold">Paste code</button> mode instead.
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Safety Warning */}
+                    <div className="p-4 bg-yellow-950/40 border border-yellow-600/30 rounded-xl text-yellow-300 text-sm leading-relaxed">
+                      ⚠️ Double-check you are not including secrets. CodeProof never uploads your files, but the ZIP hash will represent exactly what you selected.
+                    </div>
+
+                    {/* Select Folder Button */}
+                    <button
+                      onClick={handleSelectFolder}
+                      disabled={isBundling}
+                      className="w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl font-bold transition-all duration-200 text-lg"
+                    >
+                      {isBundling ? "Scanning folder..." : "Select Folder"}
+                    </button>
+
+                    {/* Folder Stats */}
+                    {folderStats && !showSizeModal && (
+                      <div className="bg-gray-900/50 border border-gray-700 rounded-2xl p-6 space-y-3 text-sm">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">📁</span>
+                          <span className="text-white font-bold text-base">{folderStats.rootFolderName}</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-y-2 text-gray-400">
+                          <span>Included files</span>
+                          <span className="text-gray-200 font-mono">{folderStats.includedFilesCount}</span>
+                          <span>Skipped</span>
+                          <span className="text-gray-200 font-mono">{folderStats.skippedFilesCount}</span>
+                          <span>Uncompressed size</span>
+                          <span className="text-gray-200 font-mono">{formatBytes(folderStats.totalBytesIncluded)}</span>
+                          <span>ZIP size</span>
+                          <span className="text-gray-200 font-mono">{formatBytes(folderStats.zipSizeBytes)}</span>
+                        </div>
+                        {folderStats.skippedFilesCount > 0 && (
+                          <details className="pt-2">
+                            <summary className="text-gray-500 cursor-pointer hover:text-gray-300 text-xs">Skipped reasons</summary>
+                            <ul className="mt-1 text-xs text-gray-500 space-y-0.5 pl-4">
+                              {Object.entries(folderStats.skippedReasons).map(([reason, count]) => (
+                                <li key={reason}>{reason}: {count}</li>
+                              ))}
+                            </ul>
+                          </details>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Generate Hash from ZIP */}
+                    {zipBytes && (
+                      <button
+                        onClick={handleFolderGenerateHash}
+                        disabled={isHashing}
+                        className="w-full px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl font-bold transition-all duration-200 text-lg"
+                      >
+                        {isHashing ? "Generating Hash..." : "Generate Hash"}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
 
             {/* Hash Display */}
             {hash && <HashDisplay hash={hash} />}
@@ -300,6 +486,8 @@ export default function RegisterPage() {
                       setRegistrationId(null);
                       setRegisteredProjectName("");
                       setRegisteredHash("");
+                      setZipBytes(null);
+                      setFolderStats(null);
                     }}
                     className="px-5 py-2.5 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition text-sm"
                   >
@@ -395,6 +583,41 @@ export default function RegisterPage() {
                   </Link>
                   <button
                     onClick={() => setShowLimitModal(false)}
+                    className="px-6 py-3 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ZIP Size Exceeded Modal */}
+          {showSizeModal && folderStats && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 max-w-md w-full">
+                <h3 className="text-xl font-bold text-white mb-3">Bundle Too Large</h3>
+                <p className="text-gray-400 mb-2">
+                  The compressed ZIP is <strong className="text-white">{formatBytes(folderStats.zipSizeBytes)}</strong>,
+                  which exceeds the <strong className="text-white">{formatBytes(zipMaxBytes)}</strong> limit
+                  on the {isPro ? "PRO" : "Free"} plan.
+                </p>
+                {!isPro && (
+                  <p className="text-gray-500 text-sm mb-6">
+                    Upgrade to PRO for up to 250 MB bundles.
+                  </p>
+                )}
+                <div className="flex gap-3">
+                  {!isPro && (
+                    <Link
+                      href="/pricing"
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 rounded-lg font-semibold transition-all text-center"
+                    >
+                      Upgrade to PRO
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => { setShowSizeModal(false); setFolderStats(null); }}
                     className="px-6 py-3 border border-gray-600 hover:border-gray-400 text-gray-300 rounded-lg font-semibold transition"
                   >
                     Close
