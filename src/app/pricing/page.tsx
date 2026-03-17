@@ -87,6 +87,14 @@ export default function PricingPage() {
                     <span className="w-5 h-5 rounded-full bg-blue-500/30 text-blue-400 flex items-center justify-center mr-3 text-xs">✓</span>
                     Polygon blockchain
                   </li>
+                  <li className="flex items-center text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-blue-500/30 text-blue-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                    Select Folder (safe) — bundle &amp; hash a project folder locally
+                  </li>
+                  <li className="flex items-center text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-blue-500/30 text-blue-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                    Folder bundle size up to 10 MB (compressed ZIP)
+                  </li>
                   <li className="flex items-center text-gray-400">
                     <span className="w-5 h-5 rounded-full bg-gray-700/30 text-gray-600 flex items-center justify-center mr-3 text-xs">✗</span>
                     PDF Certificates
@@ -140,6 +148,14 @@ export default function PricingPage() {
                   <li className="flex items-center text-gray-300">
                     <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
                     Unlimited registrations
+                  </li>
+                  <li className="flex items-center text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                    Select Folder (safe) — bundle &amp; hash a project folder locally
+                  </li>
+                  <li className="flex items-center text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                    Folder bundle size up to 250 MB (compressed ZIP)
                   </li>
                   <li className="flex items-center text-gray-300">
                     <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
@@ -217,6 +233,11 @@ export default function PricingPage() {
             <div className="p-8 bg-gray-900/50 border border-gray-800 rounded-xl">
               <h3 className="text-lg font-bold text-white mb-3">Is my code sent to any server?</h3>
               <p className="text-gray-400">Never. The hash is generated locally in your browser. Only the SHA-256 hash is registered on the blockchain.</p>
+            </div>
+
+            <div className="p-8 bg-gray-900/50 border border-gray-800 rounded-xl">
+              <h3 className="text-lg font-bold text-white mb-3">What happens when I select a project folder?</h3>
+              <p className="text-gray-400">Your files are scanned locally in your browser. CodeProof creates a sanitized ZIP bundle (excluding common build/dependency folders and secret files like <code className="text-gray-300">node_modules</code>, <code className="text-gray-300">.next</code>, and <code className="text-gray-300">.env</code>). Only the SHA&#8209;256 hash is registered — no files are uploaded.</p>
             </div>
           </div>
         </div>
