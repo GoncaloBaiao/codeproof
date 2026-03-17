@@ -74,7 +74,7 @@ export default function PricingPage() {
 
                 <p className="text-gray-400 text-sm mb-6">Perfect for trying out and personal projects</p>
 
-                <ul className="space-y-3 mb-8 flex-grow">
+                <ul className="space-y-3 mb-8 flex-grow text-left">
                   <li className="flex items-start text-gray-300">
                     <span className="w-5 h-5 rounded-full bg-blue-500/30 text-blue-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     {PLANS.FREE.monthlyRegistrations} registrations/mo
@@ -144,33 +144,33 @@ export default function PricingPage() {
 
                 <p className="text-gray-400 text-sm mb-6">For active developers and teams</p>
 
-                <ul className="space-y-3 mb-8 flex-grow">
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                <ul className="space-y-3 mb-8 flex-grow text-left">
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     Unlimited registrations
                   </li>
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     Select Folder (safe) — bundle &amp; hash a project folder locally
                   </li>
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     Folder bundle size up to 250 MB (compressed ZIP)
                   </li>
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     Hash SHA-256 client-side
                   </li>
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     Multiple blockchain networks
                   </li>
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     PDF Certificates
                   </li>
-                  <li className="flex items-center text-gray-300">
-                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs">✓</span>
+                  <li className="flex items-start text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/30 text-purple-400 flex items-center justify-center mr-3 text-xs mt-0.5 flex-shrink-0">✓</span>
                     Priority Support
                   </li>
                 </ul>
